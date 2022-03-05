@@ -145,8 +145,9 @@ class Http2Reader(
     }
     headerBlockLength = lengthWithoutPadding(headerBlockLength, flags, padding)
     val headerBlock = readHeaderBlock(headerBlockLength, padding, flags, streamId)
-
-    handler.headers(endStream, streamId, -1, headerBlock)
+	  if (!(headerBlockLength != 0 && headerBlock[0].value.utf8().equals(EARLY_HINTS_CODE))) {
+		  handler.headers(endStream, streamId, -1, headerBlock)
+	  }
   }
 
   @Throws(IOException::class)
